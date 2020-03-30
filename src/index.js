@@ -1,12 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Router } from '@reach/router'
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+import Search from './Search';
+import SearchResults from './SearchResults'
+import Person from './Person'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Search path="/" />
+      <SearchResults path="/search/:query" />
+      <Person path="/person/:name" />
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
