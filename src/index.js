@@ -13,7 +13,7 @@ ReactDOM.render(
     <Router>
       <Search path="/" />
       <SearchResults path="/search/:query" />
-      <Person path="/person/:name" />
+      <Person path="/person/:id" />
     </Router>
   </React.StrictMode>,
   document.getElementById('root')
