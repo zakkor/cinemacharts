@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { navigate } from '@reach/router'
-import { s, f } from './Values.js'
+import { s, f } from '../values.js'
 
 const StyledSearchBar = styled.input`
   border: 1px solid grey;

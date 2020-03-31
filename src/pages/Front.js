@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { s, f } from './Values.js'
-import SearchBar from './SearchBar'
+import { s, f } from '../values.js'
+import SearchBar from '../components/SearchBar'
 
 const SearchContainer = styled.div`
   text-align: center;

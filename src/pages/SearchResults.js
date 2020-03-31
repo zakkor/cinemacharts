@@ -1,26 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
 import { Link } from '@reach/router'
-import { s, f } from './Values'
-import SearchBar from './SearchBar'
-
-const Result = styled.a`
-  padding: ${s[1]};
-`
-
-const Results = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: ${s[2]};
-  margin-left: ${s[2]};
-`
+import { apiURL } from '../api'
+import SearchBar from '../components/SearchBar'
 
 function SearchResults(props) {
   const [results, setResults] = useState([])
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch(`http://localhost:3000/search/${props.query}`)
+      const res = await fetch(`${apiURL}/search/${props.query}`)
       const data = await res.json()
       setResults(data)
     }
@@ -29,7 +17,7 @@ function SearchResults(props) {
 
   const links = results.map(r =>
     <li key={r._id}>
-      <Link to={`/person/${r._id}`}> {r.actor} </Link>
+      <Link to={`/person/${r._id}`}> {r.actor.name} </Link>
     </li>
   );
 
