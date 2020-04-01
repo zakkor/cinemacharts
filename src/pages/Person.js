@@ -47,17 +47,23 @@ const Person = props => {
     <div>
       <Navbar />
       <div className="px-10 lg:px-48 mb-48">
-        <div className="flex flex-row mb-4">
-          <div>
-            <h1 className="text-4xl font-medium tracking-wide text-gray-800"> {actor.name}</h1>
-          </div>
-            <div className="ml-auto">
-              <h1 className="bg-gray-400 px-3 pt-1 rounded-md text-4xl font-medium tracking-wide text-gray-800"> {avg} </h1>
+        <div className="flex flex-row mb-8">
+          <img className="rounded-md border-2 border-gray-400 mr-6" src={actor.image_url}></img>
+
+          <div className="flex flex-col flex-grow mt-2">
+            <div className="flex flex-row mb-4">
+              <div>
+                <h1 className="text-4xl font-medium tracking-wide text-gray-800"> {actor.name}</h1>
+              </div>
+                <div className="ml-auto">
+                  <h1 className="bg-gray-400 px-3 pt-1 rounded-md text-4xl font-medium tracking-wide text-gray-800"> {avg} </h1>
+                </div>
             </div>
-        </div>
-        <div className="flex flex-row">
-          <h2 className="text-2xl font-medium tracking-wide text-gray-600 mb-2"> Actor </h2>
-          <span className="ml-auto text-2xl font-medium tracking-wide text-gray-600 mb-1"> Average rating </span>
+            <div className="flex flex-row">
+              <h2 className="text-2xl font-medium tracking-wide text-gray-600 mb-2"> Actor </h2>
+              <span className="ml-auto text-2xl font-medium tracking-wide text-gray-600 mb-1"> Average rating </span>
+            </div>
+          </div>
         </div>
 
         <hr className="mb-12"></hr>
