@@ -1,18 +1,16 @@
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { navigate } from '@reach/router'
-import { s, f } from '../values.js'
 
-const StyledSearchBar = styled.input`
-  border: 1px solid grey;
-  border-radius: 4px;
-  width: 60%;
-  font-size: ${f[0]};
-  padding: ${s[0]};
-
+const StyledSearchBar = styled.input.attrs({
+  className: "p-3 border-2 border-solid border-gray-600 rounded-md text-gray-700 w-full text-1md"
+})`
+  &:focus {
+    outline: none;
+  }
   ${props => props.large && css`
-    font-size: ${f[1]};
-    padding: ${s[1]};
+    font-size: 1.25rem;
+    padding: 1rem;
   `}
 `
 
@@ -33,10 +31,13 @@ function SearchBar(props) {
   }
 
   return (
-    <StyledSearchBar large={props.large}
+    <StyledSearchBar 
+      {...props}
+      placeholder='Search for actors...'
       value={value} 
       onChange={evt => setValue(evt.target.value)}
-      onKeyUp={searchOnEnter} />
+      onKeyUp={searchOnEnter}
+    />
   )
 }
 

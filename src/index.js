@@ -4,14 +4,14 @@ import { Router } from '@reach/router'
 import './index.css'
 import * as serviceWorker from './serviceWorker'
 
-import Front from './pages/Front';
+import Landing from './pages/Landing';
 import SearchResults from './pages/SearchResults'
 import Person from './pages/Person'
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <Front path="/" />
+      <Landing path="/" />
       <SearchResults path="/search/:query" />
       <Person path="/person/:id" />
     </Router>

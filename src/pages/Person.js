@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { apiURL } from '../api'
 import Chart from '../components/Chart'
+import Navbar from '../components/Navbar'
 
 function clone(arr) {
   return JSON.parse(JSON.stringify(arr))
@@ -24,8 +25,6 @@ const Person = props => {
     return <div>Loading...</div>
   }
 
-  // const latestMovies = movies.filter(m => m.year > 2010)
-
   const sorted = clone(movies).sort(function(a, b) {
     if (a.rating > b.rating) {
       return 1
@@ -33,29 +32,48 @@ const Person = props => {
     if (a.rating < b.rating) {
       return -1
     }
-    if (a.rating == b.rating) {
-      return 0
-    }
+    return 0
   })
     
   const topRated = sorted.slice(-10)
-  const worstRated = sorted.slice(0, 10)
+  const worstRated = sorted.slice(0, 10).reverse()
+  
+  // Average:
+  const sum = movies.reduce((acc, m) => { return acc + m.rating }, 0)
+  // 2 decimal points
+  const avg = Math.round(sum / movies.length * 10) / 10
 
   return (
     <div>
-      <h1>{actor.name}</h1>
-      <div>
-        <h2>All movies</h2>
+      <Navbar />
+      <div className="px-10 lg:px-48 mb-48">
+        <div className="flex flex-row mb-4">
+          <div>
+            <h1 className="text-4xl font-medium tracking-wide text-gray-800"> {actor.name}</h1>
+          </div>
+            <div className="ml-auto">
+              <h1 className="bg-gray-400 px-3 pt-1 rounded-md text-4xl font-medium tracking-wide text-gray-800"> {avg} </h1>
+            </div>
+        </div>
+        <div className="flex flex-row">
+          <h2 className="text-2xl font-medium tracking-wide text-gray-600 mb-2"> Actor </h2>
+          <span className="ml-auto text-2xl font-medium tracking-wide text-gray-600 mb-1"> Average rating </span>
+        </div>
+
+        <hr className="mb-12"></hr>
+
+        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8"> All films </h1>
         <Chart movies={movies}></Chart>
 
-        <h2>Top rated</h2>
+        <hr className="my-12"></hr>
+
+        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8"> Top films </h1>
         <Chart movies={topRated}></Chart>
 
-        <h2>Worst rated</h2>
+        <hr className="my-12"></hr>
+
+        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8"> Worst films </h1>
         <Chart movies={worstRated}></Chart>
-{/* 
-        <h2>Last 10 years</h2>
-        <Chart movies={latestMovies}></Chart> */}
       </div>
     </div>
   )

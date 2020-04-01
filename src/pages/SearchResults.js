@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from '@reach/router'
 import { apiURL } from '../api'
-import SearchBar from '../components/SearchBar'
+import Navbar from '../components/Navbar'
 
 function SearchResults(props) {
   const [results, setResults] = useState([])
@@ -16,17 +16,15 @@ function SearchResults(props) {
   }, [props.query])
 
   const links = results.map(r =>
-    <li key={r._id}>
-      <Link to={`/person/${r._id}`}> {r.actor.name} </Link>
-    </li>
+    <Link className="underline w-full lg:w-3/4 border-2 border-gray-400 rounded-md p-6 my-2 block text-xl text-gray-700" key={r._id} to={`/person/${r._id}`}> {r.actor.name} </Link>
   );
 
   return (
     <div>
-      <SearchBar value={props.query} />
-      <ul>
+      <Navbar />
+      <div className="container px-8 lg:pl-48">
         {links}
-      </ul>
+      </div>
     </div>
   );
 }
