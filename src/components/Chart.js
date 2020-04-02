@@ -14,27 +14,20 @@ class Chart extends React.Component {
 
   componentDidMount() {
     const ctx = this.canvas.current.getContext('2d')
+    const data = this.props.data
 
-    const labels = this.props.movies.map(e => {
-      return e.title + ` (${e.year.toString()})`
-    })
-    let showLabels = false
-    if (this.props.movies.length <= 10) {
-      showLabels = true
-    }
+    let showLabels = data.length <= 10
+    const labels = data.map(d => d.label)
+    const ratings = data.map(d => d.value)
 
-    const ratings = this.props.movies.map(e => e.rating)
-
-    let colors = []
-    for (let i = 0; i < this.props.movies.length; i++) {
-      const r = this.props.movies[i].rating
+    const colors = ratings.map(r => {
       const R = (255 * (10 - r)) / 10
       const G = (255 * r) / 10
-      colors.push(`rgba(${R}, ${G}, 0, 0.3)`)
-    }
+      return `rgba(${R}, ${G}, 0, 0.3)`
+    })
 
     CanvasChart.defaults.global.defaultFontSize = 14
-    new CanvasChart(ctx, {
+    var chart = new CanvasChart(ctx, {
       type: 'bar',
       data: {
         labels: labels,

@@ -32,9 +32,8 @@ function SearchBar(props) {
 
   return (
     <StyledSearchBar 
-      {...props}
       placeholder='Search for actors...'
-      value={value} 
+      defaultValue={value} 
       onChange={evt => setValue(evt.target.value)}
       onKeyUp={searchOnEnter}
     />

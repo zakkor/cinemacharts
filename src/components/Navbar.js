@@ -4,7 +4,7 @@ import SearchBar from '../components/SearchBar'
 
 function Navbar(props) {
   return (
-    <nav className="flex items-center justify-between flex-wrap bg-gray-700 p-6 mb-6">
+    <nav className="flex items-center justify-between flex-wrap bg-gray-700 p-6 mb-8">
       <div className="flex items-center flex-shrink-0 text-white mb-1 ml-2">
         <Link className="font-medium text-xl tracking-wide" to="/">CinemaCharts</Link>
       </div>

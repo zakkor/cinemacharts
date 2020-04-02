@@ -5,14 +5,14 @@ import './index.css'
 import * as serviceWorker from './serviceWorker'
 
 import Landing from './pages/Landing';
-import SearchResults from './pages/SearchResults'
+import Search from './pages/Search'
 import Person from './pages/Person'
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <Landing path="/" />
-      <SearchResults path="/search/:query" />
+      <Search path="/search/:query" />
       <Person path="/person/:id" />
     </Router>
   </React.StrictMode>,
