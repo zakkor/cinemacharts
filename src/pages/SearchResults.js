@@ -16,7 +16,7 @@ function SearchResults(props) {
   }, [props.query])
 
   const links = results.map(r =>
-    <Link className="underline w-full lg:w-3/4 border-2 border-gray-400 rounded-md p-6 my-2 block text-xl text-gray-700" key={r._id} to={`/person/${r._id}`}> {r.actor.name} </Link>
+    <Link className="underline w-full lg:w-3/4 border-2 border-gray-400 rounded-md p-6 my-2 block text-xl text-gray-700" key={r._id} to={`/person/${r.movies_id}`}> {r.name} </Link>
   );
 
   return (
