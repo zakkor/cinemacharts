@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { navigate } from '@reach/router'
 
 const StyledSearchBar = styled.input.attrs({
-  className: "p-3 border-2 border-solid border-gray-600 rounded-md text-gray-700 w-full text-1md"
+  className: "border-2 border-solid border-gray-600 rounded-md text-gray-700 w-full text-1md"
 })`
   &:focus {
     outline: none;
@@ -31,9 +31,10 @@ function SearchBar(props) {
   }
 
   return (
-    <StyledSearchBar 
+    <StyledSearchBar
+      className={props.className}
       placeholder='Search for actors...'
-      defaultValue={value} 
+      defaultValue={value}
       onChange={evt => setValue(evt.target.value)}
       onKeyUp={searchOnEnter}
     />

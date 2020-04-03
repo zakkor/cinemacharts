@@ -9,8 +9,10 @@ import PersonImage from '../components/PersonImage'
 const Person = props => {
   const [person, setPerson] = useState({ actor: {}, movies: [] })
   const [filters, setFilters] = useState({
-    yearFrom: -1,
-    yearTo: -1,
+    minYear: -1,
+    maxYear: -1,
+    minRating: 1,
+    maxRating: 10,
   })
   const { actor, movies } = person
 
@@ -18,10 +20,16 @@ const Person = props => {
     const years = R.uniqBy(m => m.year, R.clone(movies)).map(m => m.year)
     return {
       filteredMovies: toChartData(movies.filter(m => {
-        if (filters.yearFrom !== -1 && m.year < filters.yearFrom) {
+        if (m.rating < filters.minRating) {
           return false
         }
-        if (filters.yearTo !== -1 && m.year > filters.yearTo) {
+        if (m.rating > filters.maxRating) {
+          return false
+        }
+        if (filters.minYear !== -1 && m.year < filters.minYear) {
+          return false
+        }
+        if (filters.maxYear !== -1 && m.year > filters.maxYear) {
           return false
         }
         return true
@@ -30,8 +38,8 @@ const Person = props => {
     }
   }, [movies, filters])
 
-  if (years.length > 0 && (filters.yearFrom === -1 || filters.yearTo === -1)) {
-    setFilters({ yearFrom: years[0], yearTo: years[years.length-1] })
+  if (years.length > 0 && (filters.minYear === -1 || filters.maxYear === -1)) {
+    setFilters({ minYear: years[0], maxYear: years[years.length - 1] })
   }
 
   const { top, worst, decades } = useMemo(() => {
@@ -61,9 +69,15 @@ const Person = props => {
   const average = Math.round(sum / movies.length * 10) / 10 // round to 2 decimal points
 
   let moviesLabel = 'All films'
-  if (filters.yearFrom !== years[0] || filters.yearTo !== years[years.length-1]) {
-    moviesLabel = `Films from ${filters.yearFrom} to ${filters.yearTo}`
+  if (filters.minYear !== years[0] || filters.maxYear !== years[years.length - 1]) {
+    if (filters.minYear !== filters.maxYear) {
+      moviesLabel = `Films from ${filters.minYear} to ${filters.maxYear}`
+    } else {
+      moviesLabel = `Films from ${filters.minYear}`
+    }
   }
+
+  const ratings = R.range(1, 11)
 
   return (
     <>
@@ -90,10 +104,11 @@ const Person = props => {
 
         <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">{moviesLabel}</h1>
         <Chart data={filteredMovies}></Chart>
-
-        <div className="flex flex-wrap mt-8">
-          <SelectFilter label="From year:" options={years} filterKey="yearFrom" defaultValue={filters} onChange={setFilters} />
-          <SelectFilter label="To year:" options={years} filterKey="yearTo" defaultValue={filters} onChange={setFilters} />
+        <div className="flex flex-wrap justify-center mt-8">
+          <SelectFilter label="Minimum rating:" options={ratings} filterKey="minRating" defaultValue={filters} onChange={setFilters} />
+          <SelectFilter label="Maximum rating:" options={ratings} filterKey="maxRating" defaultValue={filters} onChange={setFilters} />
+          <SelectFilter label="From year:" options={years} filterKey="minYear" defaultValue={filters} onChange={setFilters} />
+          <SelectFilter label="To year:" options={years} filterKey="maxYear" defaultValue={filters} onChange={setFilters} />
         </div>
 
         <hr className="my-12"></hr>
@@ -161,7 +176,7 @@ const SelectFilter = props => {
   const handleChange = evt => {
     props.onChange({
       ...props.defaultValue,
-      [props.filterKey]: evt.target.value,
+      [props.filterKey]: parseInt(evt.target.value),
     })
   }
 

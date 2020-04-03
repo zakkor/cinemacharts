@@ -12,7 +12,7 @@ function Navbar(props) {
 
       <div className="mt-4 ml-2 lg:ml-6 lg:mt-0 w-full block flex-grow lg:flex lg:items-center lg:w-auto"> <div className="lg:flex-grow">
           <div className="lg:max-w-2xl">
-            <SearchBar value={props.query} />
+            <SearchBar className="p-3" value={props.query} />
           </div>
         </div>
       </div>

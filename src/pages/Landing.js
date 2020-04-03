@@ -25,9 +25,9 @@ function Landing() {
     <div>
       <Background />
       <LandingContainer>
-        <h1 className="font-medium md:text-5xl text-3xl tracking-wide text-gray-100 mb-16"> Cinema Charts </h1> 
+        <h1 className="font-medium md:text-5xl text-3xl tracking-wide text-gray-100 mb-16">Cinema Charts</h1> 
           <div className="max-w-3xl w-full">
-            <SearchBar large />
+            <SearchBar className="p-6 text-xl" />
           </div>
       </LandingContainer>
     </div>
