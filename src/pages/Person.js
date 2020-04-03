@@ -17,7 +17,7 @@ const Person = props => {
   const { filteredMovies, years } = useMemo(() => {
     const years = R.uniqBy(m => m.year, R.clone(movies)).map(m => m.year)
     return {
-      filteredMovies: movies.filter(m => {
+      filteredMovies: toChartData(movies.filter(m => {
         if (filters.yearFrom !== -1 && m.year < filters.yearFrom) {
           return false
         }
@@ -25,7 +25,7 @@ const Person = props => {
           return false
         }
         return true
-      }),
+      })),
       years,
     }
   }, [movies, filters])
@@ -37,8 +37,8 @@ const Person = props => {
   const { top, worst, decades } = useMemo(() => {
     const sorted = R.sortBy(m => m.rating, R.clone(movies))
     return {
-      top: R.takeLast(10, sorted),
-      worst: R.take(10, sorted),
+      top: toChartData(R.takeLast(10, sorted)),
+      worst: toChartData(R.take(10, sorted)),
       decades: averageEachDecade(movies),
     }
   }, [movies])
@@ -89,7 +89,7 @@ const Person = props => {
         </div>
 
         <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">{moviesLabel}</h1>
-        <Chart data={toChartData(filteredMovies)}></Chart>
+        <Chart data={filteredMovies}></Chart>
 
         <div className="flex flex-wrap mt-8">
           <SelectFilter label="From year:" options={years} filterKey="yearFrom" defaultValue={filters} onChange={setFilters} />
@@ -99,12 +99,12 @@ const Person = props => {
         <hr className="my-12"></hr>
 
         <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">Top films</h1>
-        <Chart data={toChartData(top)}></Chart>
+        <Chart data={top}></Chart>
 
         <hr className="my-12"></hr>
 
         <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">Worst films</h1>
-        <Chart data={toChartData(worst)}></Chart>
+        <Chart data={worst}></Chart>
 
         <hr className="my-12"></hr>
 
