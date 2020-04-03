@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import SearchBar from '../components/SearchBar'
-import cameraImage from '../camera.jpeg'
+import cameraImage from '../assets/images/camera.jpeg'
 
 const Background = styled.div`
   background-image: url(${cameraImage});

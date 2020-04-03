@@ -1,85 +1,130 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import * as R from 'ramda'
-import { navigate } from '@reach/router'
 import { apiURL } from '../api'
 
 import Chart from '../components/Chart'
 import Navbar from '../components/Navbar'
-import ActorImage from '../components/ActorImage'
+import PersonImage from '../components/PersonImage'
 
 const Person = props => {
-  const [actor, setActor] = useState({ name: 'Loading...' })
-  const [movies, setMovies] = useState([])
-  const [yearFrom, setYearFrom] = useState()
+  const [person, setPerson] = useState({ actor: {}, movies: [] })
+  const [filters, setFilters] = useState({
+    yearFrom: -1,
+    yearTo: -1,
+  })
+  const { actor, movies } = person
+
+  const { filteredMovies, years } = useMemo(() => {
+    const years = R.uniqBy(m => m.year, R.clone(movies)).map(m => m.year)
+    return {
+      filteredMovies: movies.filter(m => {
+        if (filters.yearFrom !== -1 && m.year < filters.yearFrom) {
+          return false
+        }
+        if (filters.yearTo !== -1 && m.year > filters.yearTo) {
+          return false
+        }
+        return true
+      }),
+      years,
+    }
+  }, [movies, filters])
+
+  if (years.length > 0 && (filters.yearFrom === -1 || filters.yearTo === -1)) {
+    setFilters({ yearFrom: years[0], yearTo: years[years.length-1] })
+  }
+
+  const { top, worst, decades } = useMemo(() => {
+    const sorted = R.sortBy(m => m.rating, R.clone(movies))
+    return {
+      top: R.takeLast(10, sorted),
+      worst: R.take(10, sorted),
+      decades: averageEachDecade(movies),
+    }
+  }, [movies])
 
   useEffect(() => {
     async function fetchData() {
       const res = await fetch(`${apiURL}/person/${props.id}`)
       const data = await res.json()
-      setActor(data.actor)
-      setMovies(data.movies)
-      setYearFrom(data.movies[0].year)
+      setPerson(data)
     }
     fetchData()
   }, [props.id])
 
-  // Year filters
-  const years = R.uniqBy(m => m.year, R.clone(movies)).map(m => m.year)
-
-  if (movies.length === 0) {
-    return <div>Loading...</div>
+  if (!person) {
+    return <div> Loading... </div>
   }
-
-  const sorted = clone(movies).sort(function (a, b) {
-    if (a.rating > b.rating) {
-      return 1
-    }
-    if (a.rating < b.rating) {
-      return -1
-    }
-    return 0
-  })
 
   // Actor average rating
   const sum = movies.reduce((acc, m) => { return acc + m.rating }, 0)
-  const avg = Math.round(sum / movies.length * 10) / 10 // round to 2 decimal points
+  const average = Math.round(sum / movies.length * 10) / 10 // round to 2 decimal points
 
+  let moviesLabel = 'All films'
+  if (filters.yearFrom !== years[0] || filters.yearTo !== years[years.length-1]) {
+    moviesLabel = `Films from ${filters.yearFrom} to ${filters.yearTo}`
+  }
 
-  // // Get URL query params
-  // const yearFromParam = params.get('year_from')
-  // if (yearFromParam) {
-  //   yearFrom = yearFromParam
-  // }
-  // // Get year_to
-  // let yearTo = years[years.length-1]
-  // const yearToParam = params.get('year_to')
-  // if (yearToParam) {
-  //   yearTo = yearToParam
-  // }
+  return (
+    <>
+      <Navbar />
+      <div className="px-10 lg:px-48 mb-48">
+        <div className="flex flex-row mb-8">
+          <PersonImage name={actor.name} width={140} height={209} src={actor.image_url} className="mr-6" />
 
-  const filteredMovies = movies.filter(m => {
-    if (m.year < yearFrom) {
-      return false
-    }
-    // if (m.year > yearTo) {
-    //   return false
-    // }
+          <div className="flex flex-col flex-grow mt-2">
+            <div className="flex flex-row mb-4">
+              <div>
+                <h1 className="text-4xl font-medium tracking-wide text-gray-800">{actor.name}</h1>
+              </div>
+              <div className="ml-auto">
+                <h1 className="bg-gray-400 border-2 border-gray-500 px-3 pt-1 rounded-md text-4xl font-medium tracking-wide text-gray-800">{average || 0}</h1>
+              </div>
+            </div>
+            <div className="flex flex-row">
+              <h2 className="text-2xl font-medium tracking-wide text-gray-600 mb-2">Actor</h2>
+              <span className="ml-auto text-2xl font-medium tracking-wide text-gray-600 mb-1">Average rating</span>
+            </div>
+          </div>
+        </div>
 
-    return true
-  })
-  console.log('filteredMovies:', filteredMovies);
-  
-  // const filteredMoviesLabel = (yearFrom == years[0] && yearTo == years[years.length-1]) ? 'All films' : `Films from ${yearFrom} to ${yearTo}`
+        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">{moviesLabel}</h1>
+        <Chart data={toChartData(filteredMovies)}></Chart>
 
-  // Top rated movies
-  const topRated = sorted.slice(-10)
-  // Worst rated movies
-  const worstRated = sorted.slice(0, 10).reverse()
+        <div className="flex flex-wrap mt-8">
+          <SelectFilter label="From year:" options={years} filterKey="yearFrom" defaultValue={filters} onChange={setFilters} />
+          <SelectFilter label="To year:" options={years} filterKey="yearTo" defaultValue={filters} onChange={setFilters} />
+        </div>
 
-  // Decades
-  const window = 10 // years
+        <hr className="my-12"></hr>
+
+        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">Top films</h1>
+        <Chart data={toChartData(top)}></Chart>
+
+        <hr className="my-12"></hr>
+
+        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">Worst films</h1>
+        <Chart data={toChartData(worst)}></Chart>
+
+        <hr className="my-12"></hr>
+
+        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">By decade</h1>
+        <Chart data={decades}></Chart>
+      </div>
+    </>
+  )
+}
+export default Person
+
+function averageEachDecade(movies) {
+  if (movies.length === 0) {
+    return []
+  }
+
+  const window = 10
   let start = Math.floor(movies[0].year / window) * window
   let istart = 0
+
   let ranges = []
   for (const [i, m] of movies.entries()) {
     const floor = Math.floor(m.year / window) * window
@@ -92,7 +137,7 @@ const Person = props => {
       istart = i
     }
   }
-  const decades = ranges.map(r => {
+  return ranges.map(r => {
     const sel = movies.slice(r.istart, r.iend)
     const sum = sel.reduce((acc, m) => acc + m.rating, 0)
     return {
@@ -101,65 +146,23 @@ const Person = props => {
       value: Math.round(sum / sel.length * 10) / 10,
     }
   })
-
-  console.log('yearFrom:', yearFrom);
-  
-
-  return (
-    <div>
-      <Navbar />
-      <div className="px-10 lg:px-48 mb-48">
-        <div className="flex flex-row mb-8">
-          <ActorImage name={actor.name} width={140} height={209} src={actor.image_url} className="mr-6" />
-
-          <div className="flex flex-col flex-grow mt-2">
-            <div className="flex flex-row mb-4">
-              <div>
-                <h1 className="text-4xl font-medium tracking-wide text-gray-800"> {actor.name}</h1>
-              </div>
-              <div className="ml-auto">
-                <h1 className="bg-gray-400 border-2 border-gray-500 px-3 pt-1 rounded-md text-4xl font-medium tracking-wide text-gray-800"> {avg} </h1>
-              </div>
-            </div>
-            <div className="flex flex-row">
-              <h2 className="text-2xl font-medium tracking-wide text-gray-600 mb-2"> Actor </h2>
-              <span className="ml-auto text-2xl font-medium tracking-wide text-gray-600 mb-1"> Average rating </span>
-            </div>
-          </div>
-        </div>
-
-        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8"> {yearFrom} </h1>
-        <Chart data={transformData(filteredMovies)}></Chart>
-
-        <div className="flex flex-wrap mt-8">
-          <SelectFilter label="From year:" options={years} urlKey="year_from" defaultValue={yearFrom} onChange={setYearFrom} />
-          {/* <SelectFilter label="To year:" options={years} urlKey="year_to" value={yearTo} /> */}
-        </div>
-
-        <hr className="my-12"></hr>
-
-        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8"> Top films </h1>
-        <Chart data={transformData(topRated)}></Chart>
-
-        <hr className="my-12"></hr>
-
-        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8"> Worst films </h1>
-        <Chart data={transformData(worstRated)}></Chart>
-
-        <hr className="my-12"></hr>
-
-        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8"> By decade </h1>
-        <Chart data={decades}></Chart>
-      </div>
-    </div>
-  )
 }
 
-export default Person
+function toChartData(a) {
+  return a.map(m => {
+    return {
+      label: m.title + ` (${m.year.toString()})`,
+      value: m.rating
+    }
+  })
+}
 
 const SelectFilter = props => {
   const handleChange = evt => {
-    props.onChange(evt.target.value)
+    props.onChange({
+      ...props.defaultValue,
+      [props.filterKey]: evt.target.value,
+    })
   }
 
   const optionEls = props.options.map(o => <option key={o}> {o} </option>)
@@ -170,7 +173,7 @@ const SelectFilter = props => {
 
       <div className="inline-block relative w-64">
         <select className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-          value={props.defaultValue}
+          value={props.defaultValue[props.filterKey]}
           onChange={handleChange}
         >
           {optionEls}
@@ -183,17 +186,4 @@ const SelectFilter = props => {
       </div>
     </div>
   )
-}
-
-function clone(arr) {
-  return JSON.parse(JSON.stringify(arr))
-}
-
-function transformData(a) {
-  return a.map(m => {
-    return {
-      label: m.title + ` (${m.year.toString()})`,
-      value: m.rating
-    }
-  })
 }

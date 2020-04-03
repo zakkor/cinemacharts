@@ -3,7 +3,7 @@ import { Link } from '@reach/router'
 import { apiURL } from '../api'
 
 import Navbar from '../components/Navbar'
-import ActorImage from '../components/ActorImage'
+import PersonImage from '../components/PersonImage'
 
 function Search(props) {
   const [results, setResults] = useState([])
@@ -21,7 +21,7 @@ function Search(props) {
     return results.map(r =>
       <Link to={`/person/${r.movies_id}`} key={r._id}>
         <div className="flex flex-row border-2 border-gray-400 rounded-md p-6 my-2">
-          <ActorImage name={r.name} width={60} height={90} src={r.image_url} className="mr-4" />
+          <PersonImage name={r.name} width={60} height={90} src={r.image_url} className="mr-4" />
           <span className="self-center underline w-full lg:w-3/4 block text-xl text-gray-700" > {r.name} </span>
         </div>
       </Link>

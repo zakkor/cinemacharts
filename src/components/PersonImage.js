@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ActorImage(props) {
+function PersonImage(props) {
   return (
     <img
       alt={`Portrait of ${props.name}`}
@@ -9,5 +9,4 @@ function ActorImage(props) {
       className={"rounded-md border-2 border-gray-400 " + props.className}></img>
   )
 }
-
-export default ActorImage
+export default PersonImage

@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router } from '@reach/router'
-import './index.css'
 import * as serviceWorker from './serviceWorker'
 
 import Landing from './pages/Landing';

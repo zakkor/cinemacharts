@@ -1,22 +1,27 @@
 import React from 'react'
-import styled from 'styled-components'
 import CanvasChart from 'chart.js'
-
-const CanvasContainer = styled.div`
-  width: 100%;
-`
 
 class Chart extends React.Component {
   constructor(props) {
     super(props)
     this.canvas = React.createRef()
+
+    CanvasChart.defaults.global.defaultFontSize = 14
   }
 
-  componentDidMount() {
-    const ctx = this.canvas.current.getContext('2d')
-    const data = this.props.data
+  render() {
+    if (this.canvas.current) {
+      this.renderChart()
+    }
 
-    let showLabels = data.length <= 10
+    return (
+      <canvas ref={this.canvas}></canvas>
+    )
+  }
+
+  renderChart() {
+    const { data } = this.props
+    const showLabels = data.length <= 10
     const labels = data.map(d => d.label)
     const ratings = data.map(d => d.value)
 
@@ -26,8 +31,12 @@ class Chart extends React.Component {
       return `rgba(${R}, ${G}, 0, 0.3)`
     })
 
-    CanvasChart.defaults.global.defaultFontSize = 14
-    var chart = new CanvasChart(ctx, {
+    // Cleanup
+    if (this.chart) {
+      this.chart.destroy()
+    }
+
+    this.chart = new CanvasChart(this.canvas.current.getContext('2d'), {
       type: 'bar',
       data: {
         labels: labels,
@@ -61,14 +70,5 @@ class Chart extends React.Component {
       }
     })
   }
-
-  render() {
-    return (
-      <CanvasContainer>
-        <canvas ref={this.canvas}></canvas>
-      </CanvasContainer>
-    )
-  }
 }
-
 export default Chart
