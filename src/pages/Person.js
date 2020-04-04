@@ -84,46 +84,50 @@ const Person = props => {
       <Navbar />
       <div className="px-10 lg:px-48 mb-48">
         <div className="flex flex-row mb-8">
-          <PersonImage name={actor.name} width={140} height={209} src={actor.image_url} className="mr-6" />
+          <PersonImage name={actor.name} height={209} src={actor.image_url} className="w-16 sm:w-32 mr-6" />
 
           <div className="flex flex-col flex-grow mt-2">
-            <div className="flex flex-row mb-4">
+            <div className="flex flex-row mb-2 sm:mb-4">
               <div>
-                <h1 className="text-4xl font-medium tracking-wide text-gray-800">{actor.name}</h1>
+                <h1 className="text-md md:text-4xl font-medium tracking-wide text-gray-800">{actor.name}</h1>
               </div>
               <div className="ml-auto">
-                <h1 className="bg-gray-400 border-2 border-gray-500 px-3 pt-1 rounded-md text-4xl font-medium tracking-wide text-gray-800">{average || 0}</h1>
+                <h1 className="bg-gray-400 border-2 border-gray-500 px-1 sm:px-3 pt-1 rounded-md text-md md:text-4xl font-medium tracking-wide text-gray-800">{average || 0}</h1>
               </div>
             </div>
             <div className="flex flex-row">
-              <h2 className="text-2xl font-medium tracking-wide text-gray-600 mb-2">Actor</h2>
-              <span className="ml-auto text-2xl font-medium tracking-wide text-gray-600 mb-1">Average rating</span>
+              <h2 className="text-sm md:text-2xl font-medium tracking-wide text-gray-600 mb-2">Actor</h2>
+              <span className="ml-auto text-sm md:text-2xl font-medium tracking-wide text-gray-600 mb-1">Average rating</span>
             </div>
           </div>
         </div>
 
-        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">{moviesLabel}</h1>
+        <h1 className="text-md sm:text-2xl font-medium tracking-wide text-gray-800 mb-8">{moviesLabel}</h1>
         <Chart data={filteredMovies}></Chart>
-        <div className="flex flex-wrap justify-center mt-8">
-          <SelectFilter label="Minimum rating:" options={ratings} filterKey="minRating" defaultValue={filters} onChange={setFilters} />
-          <SelectFilter label="Maximum rating:" options={ratings} filterKey="maxRating" defaultValue={filters} onChange={setFilters} />
-          <SelectFilter label="From year:" options={years} filterKey="minYear" defaultValue={filters} onChange={setFilters} />
-          <SelectFilter label="To year:" options={years} filterKey="maxYear" defaultValue={filters} onChange={setFilters} />
+        <div className="flex flex-wrap justify-center">
+          <div className="flex mt-6 mb-4">
+            <SelectFilter label="Min rating:" options={ratings} filterKey="minRating" defaultValue={filters} onChange={setFilters} />
+            <SelectFilter label="Max rating:" options={ratings} filterKey="maxRating" defaultValue={filters} onChange={setFilters} />
+          </div>
+          <div className="flex mt-6">
+            <SelectFilter label="Min year:" options={years} filterKey="minYear" defaultValue={filters} onChange={setFilters} />
+            <SelectFilter label="Max year:" options={years} filterKey="maxYear" defaultValue={filters} onChange={setFilters} />
+          </div>
         </div>
 
         <hr className="my-12"></hr>
 
-        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">Top films</h1>
+        <h1 className="text-md sm:text-2xl font-medium tracking-wide text-gray-800 mb-8">Top films</h1>
         <Chart data={top}></Chart>
 
         <hr className="my-12"></hr>
 
-        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">Worst films</h1>
+        <h1 className="text-md sm:text-2xl font-medium tracking-wide text-gray-800 mb-8">Worst films</h1>
         <Chart data={worst}></Chart>
 
         <hr className="my-12"></hr>
 
-        <h1 className="text-2xl font-medium tracking-wide text-gray-800 mb-8">By decade</h1>
+        <h1 className="text-md sm:text-2xl font-medium tracking-wide text-gray-800 mb-8">By decade</h1>
         <Chart data={decades}></Chart>
       </div>
     </>
@@ -184,9 +188,9 @@ const SelectFilter = props => {
 
   return (
     <div className="mr-8">
-      <p className="block uppercase tracking-wide text-gray-700 text-xs font-medium mb-2"> {props.label} </p>
+      <p className="block uppercase sm:tracking-wide text-gray-700 text-xs font-medium mb-2"> {props.label} </p>
 
-      <div className="inline-block relative w-64">
+      <div className="inline-block relative w-24 sm:w-32 md:w-64">
         <select className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
           value={props.defaultValue[props.filterKey]}
           onChange={handleChange}

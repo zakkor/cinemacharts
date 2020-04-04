@@ -21,7 +21,12 @@ class Chart extends React.Component {
 
   renderChart() {
     const { data } = this.props
-    const showLabels = data.length <= 10
+    const { width } = window.screen
+
+    let showLabels = data.length <= 10
+    if (width < 640) {
+      showLabels = false 
+    }
     const labels = data.map(d => d.label)
     const ratings = data.map(d => d.value)
 
@@ -54,6 +59,16 @@ class Chart extends React.Component {
         scales: {
           xAxes: [{
             ticks: {
+              callback: function(label) {
+                // Strip any years
+                label = label.replace(/\s\([0-9]{4}\)/, '')
+                const cutoff = 20
+                let display = label.slice(0, cutoff)
+                if (label.length > cutoff) {
+                  display += '..'
+                }
+                return display
+              },
               display: showLabels,
               major: {
                 fontColor: 'rgba(255, 0, 0, 1)'
