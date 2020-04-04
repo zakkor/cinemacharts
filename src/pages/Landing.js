@@ -64,7 +64,7 @@ function Landing() {
         <div className="max-w-3xl w-5/6 sm:w-2/3">
           <SearchBar className="p-3 sm:p-4 text-md sm:text-xl" />
         </div>
-        <div className="flex flex-wrap justify-center mt-8 sm:mt-16 max-w-3xl">
+        <div className="flex flex-wrap justify-center mt-8 sm:mt-24 max-w-3xl">
 
           {peopleEls}
 
